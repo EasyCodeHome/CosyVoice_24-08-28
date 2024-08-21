@@ -50,6 +50,7 @@ class ConditionalDecoder(nn.Module):
         self.down_blocks = nn.ModuleList([])
         self.mid_blocks = nn.ModuleList([])
         self.up_blocks = nn.ModuleList([])
+        self.compiled_infer = None
 
         output_channel = in_channels
         for i in range(len(channels)):  # pylint: disable=consider-using-enumerate
@@ -158,8 +159,7 @@ class ConditionalDecoder(nn.Module):
         Returns:
             _type_: _description_
         """
-
-        t = self.time_embeddings(t)
+        t = self.time_embeddings(t).to(t.dtype)
         t = self.time_mlp(t)
 
         x = pack([x, mu], "b * t")[0]
